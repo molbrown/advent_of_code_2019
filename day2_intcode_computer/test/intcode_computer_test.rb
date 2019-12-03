@@ -12,6 +12,6 @@ class IntcodeComputerTest < Test::Unit::TestCase
   private
 
   def check_compute(input)
-    IntcodeComputer.new(input).compute(0)
+    IntcodeComputer.new(input).compute(0, input)
   end
 end
