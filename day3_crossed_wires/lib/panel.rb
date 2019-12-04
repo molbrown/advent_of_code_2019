@@ -11,8 +11,8 @@ class Panel
     path2 = plot(@cable2, @cable_plot2)
 
     crosses = path1 & path2
-    closest = crosses.min_by { |point| point[0].abs + point[1].abs }
-    closest[0].abs + closest[1].abs
+    closest = crosses.min_by { |point| path1.index(point) + path2.index(point) }
+    path1.index(closest) + path2.index(closest) + 2
   end
 
   def plot(cable, cable_plot)
