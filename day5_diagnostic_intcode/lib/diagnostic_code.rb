@@ -3,17 +3,6 @@ class DiagnosticCode
     @sequence = sequence
   end
 
-  # Instructions:
-  # 1  | 3 params | adds parameters 1, 2, stores at 3
-  # 2  | 3 params | multiplies parameters 1, 2, stores at 3
-  # 3  | 1 param  | takes an input, stores it at param address
-  # 4  | 1 param  | outputs the value of its param
-  # 99 | 0 (end)  | exit
-
-  # Modes:
-  # 0 | position mode  | interpret param as position of the value
-  # 1 | immediate mode | interpret param as a value
-
   def diagnose(input)
     seq = @sequence.dup
     compute(input, 0, seq)
@@ -31,10 +20,10 @@ class DiagnosticCode
   def compute(input, i, enum)
     while i < enum.length
       if instruction(enum[i]) == 1
-        enum[enum[i + 3]] = enum[(mode(1, i, enum))] + enum[(mode(2, i, enum))]
+        enum[enum[i + 3]] = enum[mode(1, i, enum)] + enum[mode(2, i, enum)]
         i = i + 4
       elsif instruction(enum[i]) == 2
-        enum[enum[i + 3]] = enum[(mode(1, i, enum))] * enum[(mode(2, i, enum))]
+        enum[enum[i + 3]] = enum[mode(1, i, enum)] * enum[mode(2, i, enum)]
         i = i + 4
       elsif instruction(enum[i]) == 3
         enum[enum[i + 1]] = input
@@ -42,6 +31,16 @@ class DiagnosticCode
       elsif instruction(enum[i]) == 4
         puts enum[enum[i + 1]]
         i = i + 2
+      elsif instruction(enum[i]) == 5
+        i = enum[mode(1, i, enum)] != 0 ? enum[mode(2, i, enum)] : (i + 3)
+      elsif instruction(enum[i]) == 6
+        i = enum[mode(1, i, enum)] == 0 ? enum[mode(2, i, enum)] : (i + 3)
+      elsif instruction(enum[i]) == 7
+        enum[enum[i + 3]] = enum[mode(1, i, enum)] < enum[mode(2, i, enum)] ? 1 : 0
+        i = i + 4
+      elsif instruction(enum[i]) == 8
+        enum[enum[i + 3]] = enum[mode(1, i, enum)] == enum[mode(2, i, enum)] ? 1 : 0
+        i = i + 4
       elsif instruction(enum[i]) == 99
         return enum
       else
@@ -53,4 +52,4 @@ class DiagnosticCode
 end
 
 array = File.readlines('input')[0].split(',').map(&:to_i)
-puts DiagnosticCode.new(array).diagnose(1)
+puts DiagnosticCode.new(array).diagnose(5)
