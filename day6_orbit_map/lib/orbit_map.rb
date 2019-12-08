@@ -3,6 +3,24 @@ class OrbitMap
     @orbits = input
   end
 
+  def route(a, b)
+    a = path(a)
+    b = path(b)
+    intersect = a.find { |point| b.include?(point) }
+
+    a.index(intersect) + b.index(intersect)
+  end
+
+  def path(step)
+    path = []
+    orbit_map = orbits
+    while orbit_map[step]
+      step = orbit_map[step]
+      path << step
+    end
+    path
+  end
+
   def count
     count = 0
     orbit_map = orbits
@@ -30,4 +48,4 @@ class OrbitMap
   end
 end
 
-puts OrbitMap.new(File.readlines('input')).count
+puts OrbitMap.new(File.readlines('input')).route('YOU', 'SAN')
